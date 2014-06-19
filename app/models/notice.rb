@@ -114,11 +114,15 @@ class Notice
   end
 
   def should_email?
-    app.emailable? && emailable?
+    production? && app.emailable? && emailable?
   end
 
   def should_notify?
-    app.notification_service.notify_at_notices.include?(0) || app.notification_service.notify_at_notices.include?(similar_count)
+    production? && (app.notification_service.notify_at_notices.include?(0) || app.notification_service.notify_at_notices.include?(similar_count))
+  end
+
+  def production?
+    problem.environment == "production"
   end
 
   ##
